@@ -136,7 +136,7 @@ hrms-lite/
 
 5. **Configure environment variables:**
    ```bash
-   cp .env.example .env
+    .env
    ```
    Edit `.env` and update the `DATABASE_URL` with your MySQL credentials.
 
@@ -164,7 +164,7 @@ hrms-lite/
 
 3. **Configure environment variables:**
    ```bash
-   cp .env.example .env
+    .env
    ```
    Update the `VITE_API_URL` if your backend is not on `http://localhost:8000`
 
