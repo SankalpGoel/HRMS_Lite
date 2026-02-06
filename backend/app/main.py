@@ -1,38 +1,25 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.database.database import Base, engine
-from app.routes import employee, attendance
+import pymysql
+pymysql.install_as_MySQLdb()
 
-app = FastAPI(
-    title="HRMS Lite API",
-    description="A lightweight HR Management System API",
-    version="1.0.0",
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL not set")
+
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=280,
+    connect_args={"connect_timeout": 10},
 )
 
-@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
-
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
 )
 
-@app.get("/")
-def read_root():
-    return {
-        "message": "Welcome to HRMS Lite API",
-        "version": "1.0.0",
-        "docs": "/docs",
-    }
-
-@app.get("/health")
-def health_check():
-    return {"status": "healthy"}
-
-app.include_router(employee.router)
-app.include_router(attendance.router)
+Base = declarative_base()
