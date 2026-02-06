@@ -1,17 +1,27 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const api = {
   // Employee APIs
   employees: {
     create: async (data) => {
-      const response = await fetch(`${API_BASE_URL}/api/employees`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}/api/employees`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      } catch (e) {
+        throw new Error(`Network error when connecting to ${API_BASE_URL}: ${e.message}`);
+      }
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || "Failed to create employee");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore json parse errors
+        }
+        throw new Error((errorBody && (errorBody.detail || errorBody.message)) || `Failed to create employee (status ${response.status})`);
       }
       return await response.json();
     },

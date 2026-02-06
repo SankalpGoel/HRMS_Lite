@@ -3,7 +3,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { EmployeesPage } from './pages/EmployeesPage';
 import { AttendancePage } from './pages/AttendancePage';
 import { LoadingSpinner, ErrorMessage } from './components/SharedComponents';
-import api from './services/api';
+import api, { API_BASE_URL } from './services/api';
 import './styles/app.css';
 
 function App() {
@@ -76,6 +76,9 @@ function App() {
 
       {/* Main Content */}
       <main className="main">
+        <div style={{padding: '8px 16px', fontSize: 12, color: '#666'}}>
+          API: {API_BASE_URL}
+        </div>
         {generalError && (
           <ErrorMessage message={generalError} onDismiss={() => setGeneralError(null)} />
         )}
