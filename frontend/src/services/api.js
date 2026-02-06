@@ -27,28 +27,60 @@ const api = {
     },
 
     getAll: async () => {
-      const response = await fetch(`${API_BASE_URL}/api/employees`);
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}/api/employees`);
+      } catch (e) {
+        throw new Error(`Network error: Cannot reach ${API_BASE_URL}/api/employees - ${e.message}`);
+      }
       if (!response.ok) {
-        throw new Error("Failed to fetch employees");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        throw new Error((errorBody && errorBody.detail) || `Failed to fetch employees (status ${response.status})`);
       }
       return await response.json();
     },
 
     get: async (id) => {
-      const response = await fetch(`${API_BASE_URL}/api/employees/${id}`);
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}/api/employees/${id}`);
+      } catch (e) {
+        throw new Error(`Network error: Cannot reach ${API_BASE_URL}/api/employees/${id} - ${e.message}`);
+      }
       if (!response.ok) {
-        throw new Error("Failed to fetch employee");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        throw new Error((errorBody && errorBody.detail) || `Failed to fetch employee (status ${response.status})`);
       }
       return await response.json();
     },
 
     delete: async (id) => {
-      const response = await fetch(`${API_BASE_URL}/api/employees/${id}`, {
-        method: "DELETE",
-      });
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}/api/employees/${id}`, {
+          method: "DELETE",
+        });
+      } catch (e) {
+        throw new Error(`Network error: Cannot reach ${API_BASE_URL}/api/employees/${id} - ${e.message}`);
+      }
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || "Failed to delete employee");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        throw new Error((errorBody && errorBody.detail) || `Failed to delete employee (status ${response.status})`);
       }
       return response.ok;
     },
@@ -57,14 +89,24 @@ const api = {
   // Attendance APIs
   attendance: {
     create: async (data) => {
-      const response = await fetch(`${API_BASE_URL}/api/attendance`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}/api/attendance`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      } catch (e) {
+        throw new Error(`Network error: Cannot reach ${API_BASE_URL}/api/attendance - ${e.message}`);
+      }
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || "Failed to mark attendance");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        throw new Error((errorBody && (errorBody.detail || errorBody.message)) || `Failed to mark attendance (status ${response.status})`);
       }
       return await response.json();
     },
@@ -79,17 +121,39 @@ const api = {
         ? `${API_BASE_URL}/api/attendance?${queryParams}`
         : `${API_BASE_URL}/api/attendance`;
 
-      const response = await fetch(url);
+      let response;
+      try {
+        response = await fetch(url);
+      } catch (e) {
+        throw new Error(`Network error: Cannot reach ${API_BASE_URL}/api/attendance - ${e.message}`);
+      }
       if (!response.ok) {
-        throw new Error("Failed to fetch attendance records");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        throw new Error((errorBody && errorBody.detail) || `Failed to fetch attendance records (status ${response.status})`);
       }
       return await response.json();
     },
 
     getByEmployee: async (employeeId) => {
-      const response = await fetch(`${API_BASE_URL}/api/attendance/employee/${employeeId}`);
+      let response;
+      try {
+        response = await fetch(`${API_BASE_URL}/api/attendance/employee/${employeeId}`);
+      } catch (e) {
+        throw new Error(`Network error: Cannot reach ${API_BASE_URL}/api/attendance/employee/${employeeId} - ${e.message}`);
+      }
       if (!response.ok) {
-        throw new Error("Failed to fetch attendance records");
+        let errorBody = null;
+        try {
+          errorBody = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        throw new Error((errorBody && errorBody.detail) || `Failed to fetch attendance records (status ${response.status})`);
       }
       return await response.json();
     },
